@@ -1,9 +1,9 @@
 %*********************************EDOLAB ver 2.00*********************************
 %
-%Authors: Mai Peng and Danial Yazdani
-% e-mails: pengmai1998 AT gmail DOT com
-%          danial DOT yazdani AT gmail DOT com
-%Last Edited: May 6, 2025
+% Authors: Mai Peng and Danial Yazdani
+% e-mails: pengmai1998@gmail.com
+%          danial.yazdani@gmail.com
+% Last Edited: Nov 22, 2025
 %
 % ------------
 % Reference:
@@ -42,7 +42,7 @@ AlgorithmName = 'ACFPSO';    %Please input the name of algorithm (EADO) you want
 %  'DSPSO' , 'DynDE' , 'DynPopDE' , 'FTMPSO' , 'HmSO' ,  'IDSPSO' , 'ImQSO' , 'mCMAES'
 %  'mDE' , 'mjDE' , 'mPSO' , 'mQSO' , 'psfNBC' , 'RPSO' , 'SPSO_AP_AD' ,
 %  'TMIPSO', 'DPCPSO', 'APCPSO'
-BenchmarkName = 'FPs';     %Please input the name of benchmark you want to use here (names are case sensitive).
+BenchmarkName = 'GMPB';     %Please input the name of benchmark you want to use here (names are case sensitive).
 %  The current version of EDOLAB includes the following benchmark generators: 'MPB' , 'GDBG' , 'GMPB' , 'FPs'
 %% Get the algorithm and benchmark lists
 AlgorithmsFloder = dir([projectPath,'\Algorithm']);
@@ -65,11 +65,42 @@ elseif(~ismember(BenchmarkName,BenchmarksList))
     error("No Such Benchmark in EDOLAB");
 end
 %% ********Algorithm parameters, Benchmark parameters and Run number********
-% To modify configuration parameters, please edit:
-% - Algorithm settings: getAlgConfigurableParameters_[EDO].m in the selected algorithm folder
-% - Problem settings: getProConfigurableParameters_[Benchmark].m in the selected problem folder
+% Configuration workflow (for Code Mode users):
+%  1) Default parameter definitions (do not require JSON):
+%     - Algorithm settings: Algorithm/<AlgorithmName>/getAlgConfigurableParameters_<AlgorithmName>.m
+%     - Problem  settings: Benchmark/<BenchmarkName>/getProConfigurableParameters_<BenchmarkName>.m
+%     In these files, all configurable parameters are defined as:
+%       ConfigurableParameters.<ParamName>.value
+%
+%     To discover available parameter names, either:
+%       - Open the corresponding getAlgConfigurableParameters_*.m / getProConfigurableParameters_*.m
+%         files and inspect the fields of ConfigurableParameters; or
+%       - In MATLAB Command Window, run:
+%             tmpAlg = getAlgConfigurableParameters(AlgorithmName);
+%             fieldnames(tmpAlg)
+%             tmpPro  = getProConfigurableParameters(BenchmarkName);
+%             fieldnames(tmpPro)
+%         then use these field names below.
+%
+%  2) Quick override in CodeMode.m (for fast experiments):
+%     First load the default configuration:
 ConfigurableAlgParameters = getAlgConfigurableParameters(AlgorithmName);
 ConfigurableProParameters = getProConfigurableParameters(BenchmarkName);
+%     Then optionally override any parameter *for this run only* by assigning:
+%       ConfigurableAlgParameters.<ParamName>.value  = <new value>;
+%       ConfigurableProParameters.<ParamName>.value  = <new value>;
+%     For example (uncomment and adjust as needed):
+%       % Algorithm (ACFPSO) example:
+%       % ConfigurableAlgParameters.PopulationSize.value      = 20;
+%       % ConfigurableAlgParameters.c1.value                  = 1.8;
+%       % ConfigurableAlgParameters.c2.value                  = 1.6;
+%       %
+%       % Benchmark (GMPB) example:
+%       % ConfigurableProParameters.Dimension.value           = 10;
+%       % ConfigurableProParameters.ChangeFrequency.value     = 2000;
+%       % ConfigurableProParameters.PeakNumber.value          = 5;
+%
+%     Changes here do not modify GUI or JSON files; they only affect the current CodeMode run.
 Dimension                      = ConfigurableProParameters.Dimension.value;
 RunNumber                      = 1;   %It should be set to 31 in Experimentation module, and must be set to 2 for using Education module.
 %% ********Figures and Outputs********
@@ -98,9 +129,24 @@ close;clc;
 fields = fieldnames(Results);
 for i = 1:numel(fields)
     name = fields{i};
+    if strcmp(name, 'T_r')
+        continue; % Runtime is reported separately below
+    end
     info = Results.(name);   
     if isfield(info, 'mean') && isfield(info, 'median') && isfield(info, 'StdErr')
         disp([name, ' ==> Mean = ', num2str(info.mean), ', Median = ', num2str(info.median), ', Standard Error = ', num2str(info.StdErr)]);
+    end
+end
+
+% Runtime report (not used as a comparison indicator)
+if isfield(Results, 'T_r')
+    T_r = Results.T_r;
+    disp('Runtime (T_r):');
+    disp(['  Mean   = ', num2str(T_r.mean)]);
+    disp(['  Median = ', num2str(T_r.median)]);
+    disp(['  StdErr = ', num2str(T_r.StdErr)]);
+    if isfield(T_r, 'AllResults')
+        disp(['  All runs (s): ', num2str(T_r.AllResults)]);
     end
 end
 

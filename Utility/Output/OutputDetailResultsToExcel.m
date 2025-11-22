@@ -149,7 +149,7 @@ function OutputDetailResultsToExcel(AlgorithmName, AlgorithmParams, BenchmarkNam
        paramStr = strjoin(paramList, ', ');
    end
    function ResultsFields = getResultField(Results)
-       baseFields = {'Problem', 'CurrentError', 'VisualizationInfo', 'Iteration'};
+       baseFields = {'Problem', 'CurrentError', 'VisualizationInfo', 'Iteration', 'T_r'};
        ResultsFields = {};
        resultFields = fieldnames(Results);
        currentFields = setdiff(resultFields, baseFields, 'stable');

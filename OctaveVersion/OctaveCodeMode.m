@@ -87,11 +87,42 @@ elseif(~ismember(BenchmarkName,BenchmarksList))
     error("No Such Benchmark in EDOLAB");
 end
 %% ********Algorithm parameters, Benchmark parameters and Run number********
-% To modify configuration parameters, please edit:
-% - Algorithm settings: getAlgConfigurableParameters_[EDO].m in the selected algorithm folder
-% - Problem settings: getProConfigurableParameters_[Benchmark].m in the selected problem folder
+% Configuration workflow (for Octave Code Mode users):
+%  1) Default parameter definitions (do not require JSON):
+%     - Algorithm settings: Algorithm/<AlgorithmName>/getAlgConfigurableParameters_<AlgorithmName>.m
+%     - Problem  settings: Benchmark/<BenchmarkName>/getProConfigurableParameters_<BenchmarkName>.m
+%     In these files, all configurable parameters are defined as:
+%       ConfigurableParameters.<ParamName>.value
+%
+%     To discover available parameter names, either:
+%       - Open the corresponding getAlgConfigurableParameters_*.m / getProConfigurableParameters_*.m
+%         files and inspect the fields of ConfigurableParameters; or
+%       - In Octave, run:
+%             tmpAlg = getAlgConfigurableParameters(AlgorithmName);
+%             fieldnames(tmpAlg)
+%             tmpPro  = getProConfigurableParameters(BenchmarkName);
+%             fieldnames(tmpPro)
+%         then use these field names below.
+%
+%  2) Quick override in OctaveCodeMode.m (for fast experiments):
+%     First load the default configuration:
 ConfigurableAlgParameters = getAlgConfigurableParameters(AlgorithmName);
 ConfigurableProParameters = getProConfigurableParameters(BenchmarkName);
+%     Then optionally override any parameter *for this run only* by assigning:
+%       ConfigurableAlgParameters.<ParamName>.value  = <new value>;
+%       ConfigurableProParameters.<ParamName>.value  = <new value>;
+%     For example (uncomment and adjust as needed):
+%       % Algorithm (ACFPSO) example:
+%       % ConfigurableAlgParameters.PopulationSize.value      = 20;
+%       % ConfigurableAlgParameters.c1.value                  = 1.8;
+%       % ConfigurableAlgParameters.c2.value                  = 1.6;
+%       %
+%       % Benchmark (FPs / MPB / GMPB) example:
+%       % ConfigurableProParameters.Dimension.value           = 10;
+%       % ConfigurableProParameters.ChangeFrequency.value     = 2000;
+%       % ConfigurableProParameters.PeakNumber.value          = 5;
+%
+%     Changes here do not modify GUI or JSON files; they only affect the current OctaveCodeMode run.
 Dimension                      = ConfigurableProParameters.Dimension.value;
 RunNumber                      = 1;   %It should be set to 31 in Experimentation module, and must be set to 2 for using Education module.
 %% ********Figures and Outputs********

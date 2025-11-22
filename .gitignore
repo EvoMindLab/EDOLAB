@@ -6,3 +6,10 @@ Results/BatchRecords/*
 Results/StatisticalAnalysis/*
 Results/TaskDetailResults/*
 .idea/
+.codex/
+.claude/
+.gemini/
+openspec/
+AGENTS.md
+CLAUDE.md
+GEMINI.md

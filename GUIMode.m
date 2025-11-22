@@ -1,8 +1,10 @@
 %*********************************EDOLAB ver 2.00*********************************
 %
 % Author: Mai Peng, Danial Yazdani and Delaram Yazdani
-% Last Edited: May 6, 2025
 % e-mail: pengmai1998@gmail.com
+%         danial.yazdani@gmail.com
+%         delaram.yazdani@yahoo.com
+% Last Edited: Nov 22, 2025
 %
 % ------------
 % Reference:
@@ -570,13 +572,17 @@ classdef GUIMode < matlab.apps.AppBase
             app.CompletedTasksTable.Layout.Row = 3;
             app.CompletedTasksTable.Layout.Column = [1, 4];
             app.CompletedTasksTable.RowName = {};
-            app.CompletedTasksTable.ColumnName = {'Task ID', 'Task Info', 'E_o(mean)', 'E_o(median)', 'E_o(SE)', 'E_bbc(mean)', 'E_bbc(median)', 'E_bbc(SE)'};
-            app.CompletedTasksTable.ColumnWidth = {'fit', 'fit', 'fit', 'fit', 'fit', 'fit', 'fit', 'fit'};
+            app.CompletedTasksTable.ColumnName = { ...
+                'Select', 'Task ID', 'Task Info', ...                                   % static columns
+                'E_o(mean)', 'E_o(median)', 'E_o(SE)', ...                             % default indicators
+                'E_bbc(mean)', 'E_bbc(median)', 'E_bbc(SE)', ...                       % default indicators
+                'T_r(mean)', 'T_r(median)', 'T_r(SE)'};                                % fixed runtime columns
+            app.CompletedTasksTable.ColumnWidth = repmat({'fit'}, 1, numel(app.CompletedTasksTable.ColumnName));
             app.CompletedTasksTable.Data = {};
             app.CompletedTasksTable.CellSelectionCallback = @(src, event) showCompletedTaskDetails(app, event);
             app.CompletedTasksTable.CellEditCallback = @(src, event) CompletedTasksTableCellEdit(app, event);
 
-            app.UnionIndicatorsItem = {'E_o', 'E_bbc', 'T_r'};
+            app.UnionIndicatorsItem = {'E_o', 'E_bbc'};
             
             numIndicators = numel(app.UnionIndicatorsItem);
             app.UnionIndicatorsGridLayout = uigridlayout(app.RightGridLayout);
@@ -719,7 +725,7 @@ classdef GUIMode < matlab.apps.AppBase
             app.SATasksTable.CellSelectionCallback = @(src, event) showSATaskDetails(app, event);
             app.SATasksTable.CellEditCallback = @(src, event) SATasksTableCellEdit(app, event);
 
-            app.IntersectIndicatorsItem = {'E_o', 'E_bbc', 'T_r'};
+            app.IntersectIndicatorsItem = {'E_o', 'E_bbc'};
 
             app.ShowIntersectIndicatorsLabel = uilabel(app.SAGridLayout, 'Text', '*Tested Indicators:', 'Tooltip', ['Select which indicators to test and plot. ' ...
                 'At least one indicator must be selected.']);
@@ -1645,8 +1651,10 @@ classdef GUIMode < matlab.apps.AppBase
                 dynamicColumns{end+1} = sprintf('%s(median)', name);
                 dynamicColumns{end+1} = sprintf('%s(SE)', name);
             end
+            % Fixed runtime columns, always shown at the end
+            runtimeColumns = {'T_r(mean)', 'T_r(median)', 'T_r(SE)'};
             
-            allColumns = [staticColumns, dynamicColumns];
+            allColumns = [staticColumns, dynamicColumns, runtimeColumns];
             
             numTotalCols = numel(allColumns);
             columnFormat = cell(1, numTotalCols);
@@ -1699,19 +1707,43 @@ classdef GUIMode < matlab.apps.AppBase
                         end
                     end
                     
+                    % Append runtime statistics as fixed columns
+                    if isfield(task.Result, 'T_r')
+                        tr = task.Result.T_r;
+                        if isfield(tr, 'mean')
+                            row{end+1} = tr.mean;
+                        else
+                            row{end+1} = '';
+                        end
+                        if isfield(tr, 'median')
+                            row{end+1} = tr.median;
+                        else
+                            row{end+1} = '';
+                        end
+                        if isfield(tr, 'StdErr')
+                            row{end+1} = tr.StdErr;
+                        else
+                            row{end+1} = '';
+                        end
+                    else
+                        row{end+1} = '';
+                        row{end+1} = '';
+                        row{end+1} = '';
+                    end
+                    
                     row{end+1} = task.CreationTime;
                     CompletedTasks(end+1, :) = row;
                 end
             end
             
             if ~isempty(CompletedTasks)
-                creationTimes = datetime({CompletedTasks{:, end}});  % last colum is CreationTime
+                creationTimes = datetime({CompletedTasks{:, end}});  % last column is CreationTime
                 [~, sortedIdx] = sort(creationTimes, 'ascend');
                 CompletedTasks = CompletedTasks(sortedIdx, :);
                 CompletedTasks = CompletedTasks(:, 1:end-1);
             end
             app.CompletedTasksTable.ColumnName = allColumns;
-            app.CompletedTasksTable.ColumnWidth = [repmat({'fit'}, 1, numel(staticColumns)+numel(dynamicColumns))];
+            app.CompletedTasksTable.ColumnWidth = [repmat({'fit'}, 1, numel(staticColumns)+numel(dynamicColumns)+numel(runtimeColumns))];
             app.CompletedTasksTable.Data = CompletedTasks;
             app.CompletedTasksTable.ColumnFormat = columnFormat;
             app.CompletedTasksTable.ColumnEditable = columnEditable;
@@ -3018,7 +3050,7 @@ classdef GUIMode < matlab.apps.AppBase
 
             indicators = getResultFieldUnion(app);
             if isempty(indicators)
-                indicators = {'E_o', 'E_bbc', 'T_r'};
+                indicators = {'E_o', 'E_bbc'};
             end
             app.UnionIndicatorsItem = indicators;
             freshUnionIndicatorCheckboxes(app);
@@ -3050,7 +3082,7 @@ classdef GUIMode < matlab.apps.AppBase
             end
             indicators = getResultFieldIntersect(app);
             if isempty(indicators)
-                indicators = {'E_o', 'E_bbc', 'T_r'};
+                indicators = {'E_o', 'E_bbc'};
             end
             app.IntersectIndicatorsItem = indicators;
             freshIntersectIndicatorCheckboxes(app);
@@ -3678,6 +3710,19 @@ classdef GUIMode < matlab.apps.AppBase
                     taskID = taskIDs{task};
                     data = app.SATasks(taskID).Result.(indicator).AllResults;
                     dataMatrix = [dataMatrix, data(:)];
+                end
+
+                % Ensure there are enough observations for Friedman test
+                [numRows, numCols] = size(dataMatrix);
+                if numRows < 2 || numCols < 2
+                    uialert(app.UIFigure, ...
+                        sprintf(['Friedman test requires at least two runs per task ' ...
+                                 'and at least two tasks.\n\n' ...
+                                 'Indicator: %s\nCurrent size: %d x %d'], ...
+                                indicator, numRows, numCols), ...
+                        'Insufficient Data for Friedman Test', ...
+                        'Icon', 'warning');
+                    return;
                 end
                 
                 % Run Friedman test
@@ -5429,7 +5474,7 @@ classdef GUIMode < matlab.apps.AppBase
         end
 
         function ResultsFields = getResultFieldUnion(app)
-            baseFields = {'Problem', 'CurrentError', 'VisualizationInfo', 'Iteration'};
+            baseFields = {'Problem', 'CurrentError', 'VisualizationInfo', 'Iteration', 'T_r'};
             ResultsFields = {};
             taskIDs = keys(app.Tasks);
             numTasks = length(taskIDs);
@@ -5450,7 +5495,7 @@ classdef GUIMode < matlab.apps.AppBase
         end
 
         function ResultsFields = getResultFieldIntersect(app)
-            baseFields = {'Problem', 'CurrentError', 'VisualizationInfo', 'Iteration'};
+            baseFields = {'Problem', 'CurrentError', 'VisualizationInfo', 'Iteration', 'T_r'};
             taskIDs = keys(app.SATasks);
             numTasks = length(taskIDs);
             ResultsFields = {};
