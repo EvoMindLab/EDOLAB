@@ -2,7 +2,7 @@
 
 > A MATLAB Optimization Platform for Education and Experimentation in Dynamic Environments
 
-**Git repository:** [Danial-Yazdani/EDOLAB-MATLAB (github.com)](https://github.com/Danial-Yazdani/EDOLAB-MATLAB)
+**Git repository:** EvoMindLab/EDOLAB (github.com)](https://github.com/EvoMindLab/EDOLAB)
 
 **The current version is `v2.00`**
 
@@ -11,7 +11,7 @@
 
 * **DELARAM YAZDANI**, delaram.yazdani@yahoo.com, Liverpool Logistics, Offshore and Marine (LOOM) Research Institute, Faculty of Engineering and Technology, Liverpool John Moores University, United Kingdom, L2 2ER; 
 
-* **DANIAL YAZDANI**, danial.yazdani@gmail.com, Business Intelligence Group, Department of Technology, WINC Australia, Australia;
+* **DANIAL YAZDANI**, danial.yazdani@gmail.com, School of Computing Technologies, RMIT University, Melbourne, Australia, 3000;
 
 * **ZENENG SHE**, 20s151103@stu.hit.edu.cn, School of Computer Science and Technology, Harbin Institute of Technology, Shenzhen, China, 518055; 
 
