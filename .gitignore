@@ -13,3 +13,14 @@ openspec/
 AGENTS.md
 CLAUDE.md
 GEMINI.md
+
+# Python version
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+PythonVersion/results/
+# Tests are run before each release and are not part of the repository
+PythonVersion/tests/
+PythonVersion/apps/remote/frontend/tests/
+CEC2027_Competition/tests/

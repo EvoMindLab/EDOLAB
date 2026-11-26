@@ -1,0 +1,154 @@
+.plot-workspace { display: grid; min-height: max(680px, calc(100dvh - 92px)); align-content: start; }
+.plot-workspace--embedded { display: flex; width: 100%; height: 100%; min-height: 0; flex-direction: column; }
+.plot-workspace > .notice { margin-bottom: 12px; }
+.plot-workspace > .notice .button { margin-top: 8px; }
+
+.plot-embedded-heading { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; padding: 14px 18px; border: 0; border-radius: var(--radius-lg); background: var(--bg-surface); box-shadow: var(--shadow-card); }
+.plot-embedded-heading > div { min-width: 0; }
+.plot-embedded-heading h2 { font-size: var(--text-lg); font-weight: 600; }
+.plot-embedded-heading p { margin-top: 3px; color: var(--text-muted); font-size: var(--text-xs); line-height: 1.45; }
+.plot-embedded-heading > .button { flex: 0 0 auto; }
+
+.plot-layout {
+  display: grid;
+  min-height: 640px;
+  grid-template-columns: minmax(0, 1.16fr) minmax(300px, .84fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.plot-source-panel,
+.plot-settings-panel { min-width: 0; min-height: 0; overflow: hidden; }
+.plot-source-panel { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto auto; }
+.plot-settings-panel { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.plot-count { color: var(--text-muted); font-size: var(--text-xs); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.plot-source-header > div:last-child { display: flex; align-items: center; gap: 8px; }
+.plot-source-header .button { min-height: 28px; padding-inline: 8px; }
+
+.plot-source-toolbar { display: flex; min-width: 0; align-items: center; gap: 8px; padding: 9px 12px; border-bottom: 1px solid var(--border-subtle); }
+.plot-source-scope { min-width: 0; flex: 1 1 auto; overflow: hidden; color: var(--text-secondary); font-size: var(--text-xs); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.plot-search { display: flex; min-width: 0; height: 34px; flex: 1 1 auto; align-items: center; gap: 7px; padding: 0 11px; border: 1px solid transparent; border-radius: var(--radius-md); background: var(--bg-field); color: var(--text-muted); transition: border-color 140ms var(--ease), background 140ms var(--ease), box-shadow 140ms var(--ease); }
+.plot-search:focus-within { border-color: var(--accent); background: var(--bg-surface); box-shadow: 0 0 0 3.5px var(--focus-halo); }
+.plot-search input { min-width: 0; flex: 1 1 auto; border: 0; outline: 0; background: transparent; color: var(--text-primary); font-size: var(--text-xs); }
+.plot-source-table-wrap { min-height: 0; overflow: auto; scrollbar-gutter: stable; }
+.plot-source-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-variant-numeric: tabular-nums; }
+.plot-source-table th,
+.plot-source-table td { padding: 9px 10px; border-bottom: 1px solid var(--border-subtle); text-align: left; vertical-align: middle; }
+.plot-source-table th { position: sticky; z-index: 1; top: 0; background: var(--bg-subtle); color: var(--text-muted); font-size: var(--text-xs); font-weight: 600; }
+.plot-source-table td { overflow: hidden; color: var(--text-secondary); font-size: var(--text-xs); text-overflow: ellipsis; white-space: nowrap; }
+.plot-source-table th:first-child { width: 36px; }
+.plot-source-table th:nth-child(2) { width: 32%; }
+.plot-source-table th:nth-child(3),
+.plot-source-table th:nth-child(4) { width: 20%; }
+.plot-source-table th:last-child { width: 104px; }
+.plot-source-table tbody tr { cursor: pointer; transition: background 120ms var(--ease); }
+.plot-source-table tbody tr:hover { background: var(--bg-subtle); }
+.plot-source-table tbody tr.is-selected { background: var(--accent-bg); }
+.plot-source-table tbody tr[data-disabled="true"] { cursor: not-allowed; opacity: .52; }
+.plot-source-table input { width: 14px; height: 14px; accent-color: var(--accent); }
+.plot-source-table td > strong,
+.plot-source-table td > small { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plot-source-table td > strong { color: var(--text-primary); font-size: var(--text-xs); font-weight: 600; }
+.plot-source-table td > small { margin-top: 2px; color: var(--text-muted); font-size: var(--text-2xs); }
+.plot-source-table td:last-child { display: grid; grid-template-columns: auto 1fr auto 1fr; align-items: baseline; gap: 2px 4px; }
+.plot-source-table td:last-child strong { display: inline; font-family: var(--mono); }
+.plot-source-table td:last-child small { display: inline; margin: 0; }
+
+.plot-other-sources { border-top: 1px solid var(--border-subtle); background: var(--bg-subtle); }
+.plot-other-sources__toggle { display: grid; width: 100%; min-height: 40px; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 7px; padding: 8px 12px; border: 0; background: transparent; color: var(--text-secondary); text-align: left; }
+.plot-other-sources__toggle span { font-size: var(--text-xs); font-weight: 600; }
+.plot-other-sources__toggle small { font-size: var(--text-2xs); color: var(--text-muted); }
+.plot-other-sources__toggle > svg:last-child { transition: transform 160ms var(--ease); }
+.plot-other-sources__toggle[aria-expanded="true"] > svg:last-child { transform: rotate(180deg); }
+.plot-other-sources__body { display: grid; max-height: 310px; gap: 7px; overflow: auto; padding: 0 10px 10px; }
+.plot-other-sources__body > .plot-search { flex: none; background: var(--bg-surface); }
+.plot-other-sources__body details { overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface); }
+.plot-other-sources__body summary { display: flex; min-height: 38px; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 10px; cursor: pointer; list-style: none; }
+.plot-other-sources__body summary::-webkit-details-marker { display: none; }
+.plot-other-sources__body summary > span { display: grid; min-width: 0; flex: 1 1 auto; gap: 1px; }
+.plot-other-sources__body summary strong { overflow: hidden; font-size: var(--text-xs); text-overflow: ellipsis; white-space: nowrap; }
+.plot-other-sources__body summary small { color: var(--text-muted); font-size: var(--text-2xs); }
+.plot-other-sources__body details[open] summary > svg { transform: rotate(180deg); }
+.plot-other-sources__body details > div { display: grid; border-top: 1px solid var(--border-subtle); }
+.plot-other-sources__body details label { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 8px; padding: 7px 10px; border-bottom: 1px solid var(--border-subtle); font-size: var(--text-xs); }
+.plot-other-sources__body details label:last-child { border-bottom: 0; }
+.plot-other-sources__body details label.is-selected { background: var(--accent-bg); }
+.plot-other-sources__body details label > span { display: grid; min-width: 0; gap: 1px; }
+.plot-other-sources__body details label strong,
+.plot-other-sources__body details label small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plot-other-sources__body details label small { color: var(--text-muted); font-size: var(--text-2xs); }
+.plot-selected-sources { display: flex; min-width: 0; align-items: center; gap: 8px; padding: 7px 10px; border-top: 1px solid var(--border-subtle); background: var(--bg-subtle); }
+.plot-selected-sources > strong { flex: 0 0 auto; color: var(--text-secondary); font-size: var(--text-2xs); }
+.plot-selected-sources > div { display: flex; min-width: 0; flex: 1 1 auto; gap: 5px; overflow-x: auto; scrollbar-width: thin; }
+.plot-selected-sources > div > button { flex: 0 0 auto; }
+.plot-selected-sources button { display: inline-flex; min-width: 0; max-width: 100%; min-height: 26px; align-items: center; gap: 5px; padding: 0 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-surface); color: var(--text-secondary); font-size: var(--text-2xs); }
+.plot-selected-sources button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.plot-settings-body { min-height: 0; overflow: auto; padding: 12px; }
+.plot-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.plot-fields label { display: grid; min-width: 0; align-content: start; gap: 5px; }
+.plot-fields label > span,
+.plot-format-field legend { color: var(--text-secondary); font-size: var(--text-xs); font-weight: 600; }
+.plot-fields select,
+.plot-fields input { width: 100%; min-width: 0; height: 34px; padding: 0 9px; border: 1px solid var(--border); border-radius: var(--radius-md); outline: 0; background: var(--bg-surface); color: var(--text-primary); font-size: var(--text-xs); }
+.plot-fields select:focus,
+.plot-fields input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+.plot-fields label > small { color: var(--text-muted); font-size: var(--text-2xs); line-height: 1.4; }
+.plot-fields .plot-field-wide { grid-column: 1 / -1; }
+.plot-format-field { display: flex; min-width: 0; flex-wrap: wrap; align-items: center; gap: 7px; margin: 12px 0 0; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-md); }
+.plot-format-field legend { padding: 0 4px; }
+.plot-format-field label { display: inline-flex; min-height: 28px; align-items: center; gap: 5px; padding: 0 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-secondary); font-size: var(--text-xs); }
+.plot-format-field input { width: 13px; height: 13px; accent-color: var(--accent); }
+.plot-format-field > small { width: 100%; color: var(--text-muted); font-size: var(--text-2xs); }
+.plot-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.plot-actions .button { width: 100%; }
+.plot-busy { display: flex; align-items: center; gap: 6px; margin-top: 9px; color: var(--text-muted); font-size: var(--text-xs); }
+
+.plot-workspace--embedded .plot-layout { min-height: 0; flex: 1 1 auto; grid-template-rows: minmax(0, 1fr); }
+.plot-export-summary { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-subtle); }
+.plot-export-summary > p { display: flex; min-width: 0; align-items: center; gap: 5px; color: var(--text-secondary); font-size: var(--text-xs); }
+.plot-export-summary > p span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.plot-preview-modal-layer { position: fixed; z-index: 80; inset: 0; display: grid; padding: 18px; background: var(--backdrop); backdrop-filter: blur(8px) saturate(140%); -webkit-backdrop-filter: blur(8px) saturate(140%); place-items: center; }
+.plot-preview-modal { display: grid; width: min(96vw, 1500px); height: min(92dvh, 1000px); min-width: 0; min-height: 0; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden; border: 0; border-radius: var(--radius-xl); background: var(--bg-surface); box-shadow: var(--shadow-lg); }
+.plot-preview-modal > header { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.plot-preview-modal > header > div { min-width: 0; }
+.plot-preview-modal > header h2 { overflow: hidden; font-size: var(--text-lg); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.plot-preview-modal > header p { overflow: hidden; margin-top: 2px; color: var(--text-muted); font-size: var(--text-xs); text-overflow: ellipsis; white-space: nowrap; }
+.plot-preview-stage { display: grid; min-height: 0; overflow: hidden; padding: 14px; background: var(--bg-canvas); place-items: center; }
+.plot-preview-image-frame { display: flex; width: 100%; height: 100%; min-width: 0; min-height: 0; align-items: center; justify-content: center; }
+.plot-preview-stage img { display: block; width: auto; height: auto; max-width: 100%; max-height: 100%; border: 1px solid var(--border); border-radius: var(--radius-md); background: white; object-fit: contain; object-position: center; box-shadow: var(--shadow-md); }
+.plot-artifact-bar { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-top: 1px solid var(--border-subtle); background: var(--bg-subtle); }
+.plot-artifact-bar p { display: flex; min-width: 0; align-items: center; gap: 6px; color: var(--text-secondary); font-size: var(--text-xs); }
+.plot-artifact-bar p span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plot-artifact-links { display: flex; flex: 0 0 auto; gap: 5px; }
+.plot-artifact-bar a,
+.plot-artifact-links > span,
+.plot-export-summary a { display: inline-flex; min-height: 28px; align-items: center; gap: 4px; padding: 0 9px; border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-secondary); background: var(--bg-surface); font-size: var(--text-xs); text-decoration: none; }
+.plot-artifact-bar a:hover,
+.plot-export-summary a:hover { border-color: var(--border-strong); color: var(--text-primary); }
+.plot-no-artifacts { border-style: dashed !important; color: var(--text-muted) !important; }
+
+@media (max-width: 1120px) {
+  .plot-layout { grid-template-columns: 1fr; grid-template-rows: minmax(430px, 56vh) auto; }
+  .plot-workspace--embedded .plot-layout { overflow: auto; grid-template-rows: minmax(420px, 58vh) auto; }
+}
+
+@media (max-width: 680px) {
+  .plot-workspace { min-height: 0; }
+  .plot-embedded-heading { align-items: stretch; flex-direction: column; }
+  .plot-embedded-heading > .button { width: 100%; }
+  .plot-layout { min-height: 0; grid-template-rows: minmax(420px, 60vh) auto; }
+  .plot-source-table th:nth-child(4),
+  .plot-source-table td:nth-child(4),
+  .plot-source-table th:last-child,
+  .plot-source-table td:last-child { display: none; }
+  .plot-source-table th:nth-child(2) { width: 52%; }
+  .plot-source-table th:nth-child(3) { width: auto; }
+  .plot-fields,
+  .plot-actions { grid-template-columns: 1fr; }
+  .plot-fields .plot-field-wide { grid-column: auto; }
+  .plot-artifact-bar { align-items: flex-start; flex-direction: column; }
+  .plot-preview-modal-layer { padding: 0; }
+  .plot-preview-modal { width: 100vw; height: 100dvh; border: 0; border-radius: 0; }
+}

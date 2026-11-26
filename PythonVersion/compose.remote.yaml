@@ -1,0 +1,43 @@
+services:
+  relay:
+    build:
+      context: .
+      dockerfile: Dockerfile.remote
+      args:
+        RELAY_UID: ${EDOLAB_RELAY_UID:-1000}
+        RELAY_GID: ${EDOLAB_RELAY_GID:-1000}
+    image: edolab-relay:local
+    init: true
+    read_only: true
+    user: "${EDOLAB_RELAY_UID:-1000}:${EDOLAB_RELAY_GID:-1000}"
+    ports:
+      - "127.0.0.1:${EDOLAB_RELAY_PORT:-8766}:8766"
+    environment:
+      HOME: /tmp/edolab-relay-home
+      EDOLAB_RELAY_CONTAINER: "1"
+      EDOLAB_RELAY_SKIP_EDITABLE_INSTALL: "1"
+      EDOLAB_RELAY_DATA_ROOT: /workspace/results/remote_control
+      EDOLAB_RELAY_REPOSITORY_ROOT: /workspace
+      EDOLAB_RELAY_FRONTEND_DIST: /opt/edolab/apps/remote/frontend/dist
+      EDOLAB_RELAY_SSH_KEY: ${EDOLAB_RELAY_SSH_KEY:?EDOLAB_RELAY_SSH_KEY_must_be_an_absolute_private_key_path}
+    volumes:
+      - type: bind
+        source: .
+        target: /workspace
+        read_only: true
+      - type: bind
+        source: ./results/remote_control
+        target: /workspace/results/remote_control
+      - type: bind
+        source: ${EDOLAB_RELAY_SSH_KEY:?EDOLAB_RELAY_SSH_KEY_must_be_an_absolute_private_key_path}
+        # Mount the key at the same absolute path stored in control.sqlite so
+        # native and Docker launchers can use one server profile unchanged.
+        target: ${EDOLAB_RELAY_SSH_KEY:?EDOLAB_RELAY_SSH_KEY_must_be_an_absolute_private_key_path}
+        read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,exec,size=256m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    stop_grace_period: 25s

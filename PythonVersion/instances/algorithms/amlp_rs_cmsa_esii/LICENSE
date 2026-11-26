@@ -1,0 +1,30 @@
+This directory contains a Python adaptation of algorithm components originally
+published by Ali Ahrari in the AMLP-RS-CMSA-ESII MATLAB package (version 1.0,
+2022). Those components and their adaptations are provided under the Creative
+Commons Attribution-NonCommercial-ShareAlike 4.0 International license:
+
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+
+Original code record and attribution:
+https://www.researchgate.net/publication/362154784_AMLP-RS-CMSA-ESII
+https://sites.google.com/view/evopt/award
+
+The author's included notice states that the code may be used for
+non-commercial and academic research, including funded academic research,
+with acknowledgement and citation of the AMLP and improved RS-CMSA papers.
+The source package's dmmops benchmark code is explicitly excluded from that
+notice and has not been incorporated into this runtime implementation.
+
+Changes in this adaptation (2026): Python/NumPy translation of the distributed
+CMSA-ESII implementation and main.m defaults, EDOLAB maximization, notified
+environment changes and bounded function-evaluation accounting. No CMA-ES
+core reconstruction is used. Adaptations are enumerated in README.md.
+
+Required references:
+Ahrari et al. Adaptive multilevel prediction method for dynamic multimodal
+optimization. IEEE TEVC 25(3):463-477, 2021. DOI:10.1109/TEVC.2021.3051172.
+Ahrari et al. Static and dynamic multimodal optimization by improved covariance
+matrix self-adaptation evolution strategy with repelling subpopulations.
+IEEE TEVC 26(3):527-541, 2022. DOI:10.1109/TEVC.2021.3117116.
+EvOpt Reports 2022002 and 2022003, University of New South Wales.
