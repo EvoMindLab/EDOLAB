@@ -42,6 +42,8 @@ Modular structure with core components:
 ├── Benchmark/             # Benchmark generators (GMPB, MPB, FPs, GDBG)
 ├── Utility/               # Helper functions
 ├── OctaveVersion/         # Octave supports
+├── PythonVersion/         # Python version (pip-installable)
+├── CEC2027_Competition/   # CEC 2027 competition edition (runs on PythonVersion)
 ├── GUIMode.m              # GUI entry point
 └── CodeMode.m             # Script mode entry
 ```
@@ -263,6 +265,41 @@ mkoctfile --mex ConstructKDTree.cpp
 ```bash
 run OctaveVersion/OctaveCodeMode.m
 ```
+
+
+## Python Version
+`PythonVersion/` is an object-oriented Python implementation of EDOLAB. It covers the benchmarks GMPB, MPB, FPs,
+GDBG and DynPORTAL, published EDOAs, the offline error and best-before-change indicators, batch experiments with
+parallel runs, and statistical analysis (Friedman with Nemenyi, Wilcoxon). It requires Python 3.10 or later.
+
+```bash
+cd PythonVersion
+python -m pip install -e .
+python -m cli list
+python -m cli run --algorithm mQSO --problem GMPB --runs 31 --problem-param Dimension=5
+```
+
+It can also be installed without cloning:
+
+```bash
+python -m pip install "git+https://github.com/EvoMindLab/EDOLAB.git#subdirectory=PythonVersion"
+```
+
+See [PythonVersion/README.md](PythonVersion/README.md) for batch experiments, statistical analysis and adding
+algorithms.
+
+
+## CEC 2027 Competition
+`CEC2027_Competition/` holds the 24 problems F1–F12 (GMPB) and P1–P12 (DynPORTAL) of the CEC 2027 Competition on
+Dynamic Optimization Problems, a runner that writes the files of a submission, an integrity check of the test problems,
+two example algorithms and a template. It runs on `PythonVersion/`. **The test problems must not be modified.**
+
+```bash
+python -m pip install -e PythonVersion
+python -m CEC2027_Competition.run --algorithm Example_mQSO --smoke
+```
+
+See [CEC2027_Competition/README.md](CEC2027_Competition/README.md).
 
 
 ## For More Information

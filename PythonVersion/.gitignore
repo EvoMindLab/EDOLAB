@@ -1,0 +1,13 @@
+__pycache__/
+node_modules/
+*.tsbuildinfo
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+build/
+dist/
+# The built Relay web interface ships with the release, so that no Node.js is needed to use it.
+!apps/remote/frontend/dist/
+results/
+.DS_Store

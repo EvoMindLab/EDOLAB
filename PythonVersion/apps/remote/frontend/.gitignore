@@ -1,0 +1,3 @@
+node_modules/
+# dist/ is intentionally tracked and packaged for the one-command Python UI.
+*.tsbuildinfo

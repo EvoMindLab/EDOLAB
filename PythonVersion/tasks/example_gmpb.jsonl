@@ -1,0 +1,5 @@
+# Example batch: two algorithms, 5 runs each, on a 10-environment GMPB instance. Run it with
+# `python -m cli batch --task-file tasks/example_gmpb.jsonl` or from the task library of the Relay console.
+{"max_parallel_runs": 4, "default_problem": "GMPB", "default_runs": 5, "default_problem_params": {"Dimension": 5, "PeakNumber": 10, "ChangeFrequency": 5000, "ShiftSeverity": 1, "EnvironmentNumber": 10, "EvaluationDevice": "numpy"}, "default_metric_outputs": ["E_o", "E_bbc"]}
+{"label": "mQSO", "algorithm": "mQSO"}
+{"label": "SPMP", "algorithm": "SPMP"}

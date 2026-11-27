@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edolab-oo"
+version = "1.0.0"
+description = "Object-oriented Python platform for evolutionary dynamic optimization (EDOLAB)."
+readme = "README.md"
+license = "GPL-3.0-only"
+requires-python = ">=3.10"
+dependencies = [
+  "cma==4.4.4",
+  "fastapi",
+  "httpx",
+  "matplotlib",
+  "numpy",
+  "openpyxl",
+  "scikit-learn>=1.3",
+  "scipy",
+  "threadpoolctl",
+  "uvicorn",
+]
+
+[project.optional-dependencies]
+torch = ["torch>=2.0"]
+
+[project.scripts]
+edolab-oo = "cli:main"
+edolab-oo-visualize-problem = "scripts.visualize_problem:main"
+edolab-relay = "startup_remote:main"
+
+[tool.setuptools]
+py-modules = ["cli", "startup_remote"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["apps", "apps.remote*", "core*", "instances*", "scripts*", "utility*"]
+exclude = ["results*", "tests*"]
+
+[tool.setuptools.package-data]
+"apps.remote" = ["frontend/dist/index.html", "frontend/dist/assets/*"]

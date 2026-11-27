@@ -1,0 +1,76 @@
+# syntax=docker/dockerfile:1.7
+
+FROM node:22-bookworm-slim AS relay-frontend
+WORKDIR /build/frontend
+COPY apps/remote/frontend/package.json apps/remote/frontend/package-lock.json ./
+RUN npm ci
+COPY apps/remote/frontend/index.html apps/remote/frontend/tsconfig.json ./
+COPY apps/remote/frontend/tsconfig.app.json apps/remote/frontend/tsconfig.node.json ./
+COPY apps/remote/frontend/vite.config.ts ./
+COPY apps/remote/frontend/src ./src
+RUN npm run build
+
+FROM python:3.11-slim-bookworm AS relay-runtime
+
+ARG RELAY_UID=1000
+ARG RELAY_GID=1000
+ARG PYTORCH_CPU_INDEX_URL=https://download.pytorch.org/whl/cpu
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    EDOLAB_RELAY_CONTAINER=1 \
+    EDOLAB_RELAY_SKIP_EDITABLE_INSTALL=1 \
+    EDOLAB_RELAY_DATA_ROOT=/workspace/results/remote_control \
+    HOME=/tmp/edolab-relay-home
+
+RUN apt-get -o Acquire::Retries=5 update \
+    && apt-get -o Acquire::Retries=5 install --yes --no-install-recommends \
+        ca-certificates \
+        curl \
+        git \
+        openssh-client \
+        rsync \
+        socat \
+    && rm -rf /var/lib/apt/lists/* \
+    && install -d -m 0755 /opt/edolab /workspace
+
+WORKDIR /opt/edolab
+COPY pyproject.toml ./
+RUN python -c \
+        'import pathlib, tomllib; data = tomllib.loads(pathlib.Path("pyproject.toml").read_text()); pathlib.Path("/tmp/edolab-requirements.txt").write_text("\n".join(data["project"]["dependencies"]) + "\n")' \
+    && python -m pip install --no-cache-dir \
+        --index-url "${PYTORCH_CPU_INDEX_URL}" \
+        "torch>=2.0" \
+    && python -m pip install --no-cache-dir \
+        --requirement /tmp/edolab-requirements.txt \
+    && rm /tmp/edolab-requirements.txt
+RUN if ! getent group "${RELAY_GID}" >/dev/null; then \
+      groupadd --gid "${RELAY_GID}" relay; \
+    fi \
+    && if ! getent passwd "${RELAY_UID}" >/dev/null; then \
+      useradd --uid "${RELAY_UID}" --gid "${RELAY_GID}" \
+        --home-dir /tmp/edolab-relay-home --no-create-home \
+        --shell /usr/sbin/nologin relay; \
+    fi
+COPY cli.py startup_remote.py ./
+COPY apps ./apps
+COPY core ./core
+COPY instances ./instances
+COPY scripts ./scripts
+COPY tasks ./tasks
+COPY utility ./utility
+COPY --from=relay-frontend /build/frontend/dist ./apps/remote/frontend/dist
+RUN python -m pip install --no-cache-dir --no-deps . \
+    && chmod 0755 /opt/edolab/apps/remote/docker-entrypoint.sh \
+    && chown -R "${RELAY_UID}:${RELAY_GID}" /workspace
+
+# A numeric identity avoids build failures when the host GID already belongs
+# to a base-image group (macOS commonly uses GID 20).  Compose passes the same
+# UID/GID at runtime so a mode-0600 SSH key remains readable without granting
+# the container a broader identity.
+USER ${RELAY_UID}:${RELAY_GID}
+WORKDIR /workspace
+EXPOSE 8766
+HEALTHCHECK --interval=15s --timeout=3s --start-period=20s --retries=4 \
+    CMD curl --fail --silent http://127.0.0.1:8767/api/health >/dev/null || exit 1
+ENTRYPOINT ["/opt/edolab/apps/remote/docker-entrypoint.sh"]
